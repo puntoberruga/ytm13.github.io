@@ -110,7 +110,8 @@
       return response(data.items.map(searchResult), data.nextPageToken);
     }
 
-    let m=p.match(/\/api\/v1\/videos\/([^/]+)$/);\n    if (!m && p.endsWith("/video/info") && q.get("id")) m={1:q.get("id")};
+    let m=p.match(/\/api\/v1\/videos\/([^/]+)$/);
+    if (!m && p.endsWith("/video/info") && q.get("id")) m={1:q.get("id")};
     if (m) {
       const data=await api("videos",{part:"snippet,contentDetails,statistics,status,liveStreamingDetails",id:m[1]});
       if (!data.items.length) return {error:"Video not found"};
