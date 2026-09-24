@@ -88,8 +88,10 @@ metaColor5 = "#464646";
 defaultMetaColor = metaColor1;
 
 function localStorageChange(){
-DISABLE_YTM15_APP_BORDER_expflag = localStorage.getItem("DISABLE_YTM15_APP_BORDER");
-DEFAULT_POPUP_MENU_STYLE_expflag = localStorage.getItem("DEFAULT_POPUP_MENU_STYLE");
+localStorage.setItem("DISABLE_YTM15_APP_BORDER", "true");
+DISABLE_YTM15_APP_BORDER_expflag = "true";
+localStorage.setItem("DEFAULT_POPUP_MENU_STYLE", "Holo");
+DEFAULT_POPUP_MENU_STYLE_expflag = "Holo";
 if (DEFAULT_POPUP_MENU_STYLE_expflag == undefined) {
 localStorage.setItem("DEFAULT_POPUP_MENU_STYLE", "Material");
 DEFAULT_POPUP_MENU_STYLE_expflag = localStorage.getItem("DEFAULT_POPUP_MENU_STYLE");
@@ -126,7 +128,8 @@ if (DARK_THEME_HASH_COLOR_expflag == undefined) {
 localStorage.setItem("DARK_THEME_HASH_COLOR", "#30");
 DARK_THEME_HASH_COLOR_expflag = localStorage.getItem("DARK_THEME_HASH_COLOR");
 }
-SUBSCRIBE_BTN_UPPERCASE_expflag = localStorage.getItem("SUBSCRIBE_BTN_UPPERCASE");
+localStorage.setItem("SUBSCRIBE_BTN_UPPERCASE", "true");
+SUBSCRIBE_BTN_UPPERCASE_expflag = "true";
 WATCH_USE_MTRL_ICONS_expflag = localStorage.getItem("WATCH_USE_MTRL_ICONS");
 BTN_FONT_WEIGHT_500_expflag = localStorage.getItem("BTN_FONT_WEIGHT_500");
 WATCH_AUTONAV_BAR_STYLE_expflag = localStorage.getItem("WATCH_AUTONAV_BAR_STYLE");
