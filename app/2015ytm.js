@@ -135,7 +135,8 @@ localStorage.setItem("WATCH_AUTONAV_BAR_STYLE", "2015");
 WATCH_AUTONAV_BAR_STYLE_expflag = localStorage.getItem("WATCH_AUTONAV_BAR_STYLE");
 }
 WATCH_AUTONAV_TITLE_USE_UPNEXT_expflag = localStorage.getItem("WATCH_AUTONAV_TITLE_USE_UPNEXT");
-APP_DEMATERIALIZE_UI_expflag = localStorage.getItem("APP_DEMATERIALIZE_UI");
+localStorage.setItem("APP_DEMATERIALIZE_UI", "true");
+APP_DEMATERIALIZE_UI_expflag = "true";
 DISABLE_TAB_ICONS_expflag = localStorage.getItem("DISABLE_TAB_ICONS");
 WATCH_ENABLE_NEW_UI_expflag = localStorage.getItem("WATCH_ENABLE_NEW_UI");
 WATCH_TILTE_FONT_WEIGHT_500_expflag = localStorage.getItem("WATCH_TILTE_FONT_WEIGHT_500");
