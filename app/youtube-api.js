@@ -100,7 +100,7 @@
 
     if (/\/api\/v1\/(trending|popular)$/.test(p)) {
       const data=await api("videos",{part:"snippet,contentDetails,statistics",chart:"mostPopular",regionCode:region,maxResults:24});
-      return response(data.items.map(videoFrom), data.nextPageToken);
+      return data.items.map(videoFrom);
     }
 
     if (/\/api\/v1\/search$/.test(p)) {
@@ -193,47 +193,50 @@
 
   window.YTM13YouTubeAPI = { api, route, videoFrom, searchResult };
 
-  const NativeXHR=window.XMLHttpRequest;
-  window.XMLHttpRequest=function(){
-    const xhr=new NativeXHR(), originalOpen=xhr.open.bind(xhr), originalSend=xhr.send.bind(xhr);
-    let intercepted=false, requestUrl="";
-    xhr.open=function(method,url,async,user,password){
-      requestUrl=String(url);
-      intercepted=/\/api\/v1\//.test(requestUrl) || /yt-api\.p\.rapidapi\.com/.test(requestUrl) || /yt\.lemnoslife\.com/.test(requestUrl);
-      if (!intercepted) return originalOpen(method,url,async,user,password);
-      this._ytm13Intercepted=true;
-      this._ytm13Method=method;
-      this._ytm13URL=requestUrl;
-      this.readyState=1;
-    };
-    xhr.setRequestHeader=function(name,value){ if(!intercepted) return NativeXHR.prototype.setRequestHeader.call(xhr,name,value); };
-    xhr.send=function(body){
-      if(!intercepted) return originalSend(body);
-      route(requestUrl).then(data=>{
-        const text=JSON.stringify(data);
-        Object.defineProperty(xhr,"status",{configurable:true,value:200});
-        Object.defineProperty(xhr,"responseText",{configurable:true,value:text});
-        Object.defineProperty(xhr,"response",{configurable:true,value:text});
-        Object.defineProperty(xhr,"readyState",{configurable:true,value:4});
-        if(typeof xhr.onload==="function") xhr.onload.call(xhr);
-        if(typeof xhr.onreadystatechange==="function") xhr.onreadystatechange.call(xhr);
-      }).catch(err=>{
-        Object.defineProperty(xhr,"status",{configurable:true,value:500});
-        Object.defineProperty(xhr,"responseText",{configurable:true,value:JSON.stringify({error:err.message})});
-        Object.defineProperty(xhr,"response",{configurable:true,value:JSON.stringify({error:err.message})});
-        Object.defineProperty(xhr,"readyState",{configurable:true,value:4});
-        if(typeof xhr.onerror==="function") xhr.onerror.call(xhr,err);
-      });
-    };
-    return xhr;
-  };
-  window.XMLHttpRequest.prototype=NativeXHR.prototype;
-
   const nativeFetch=window.fetch.bind(window);
-  window.fetch=function(input,init){
-    const u=typeof input==="string"?input:(input&&input.url)||"";
-    if (/\/api\/v1\//.test(u) || /invidious\./.test(u) || /yt-api\.p\.rapidapi\.com/.test(u)) {
-      return route(u).then(data=>new Response(JSON.stringify(data),{status:200,headers:{"Content-Type":"application/json"}}));
+
+  function interceptedURL(url) {
+    const s=String(url);
+    return /\/api\/v1\//.test(s) || /yt-api\.p\.rapidapi\.com/.test(s) || /invidious\./.test(s);
+  }
+
+  class BridgeXHR {
+    constructor() {
+      this.readyState=0; this.status=0; this.responseText=""; this.response="";
+      this.onreadystatechange=null; this.onload=null; this.onerror=null;
+      this._url="";
+    }
+    open(method,url,async=true) {
+      this._url=String(url); this.readyState=1;
+      if (this.onreadystatechange) this.onreadystatechange();
+    }
+    setRequestHeader() {}
+    getResponseHeader(name) { return String(name).toLowerCase()==="content-type" ? "application/json" : null; }
+    send() {
+      route(this._url).then(data => {
+        const body=JSON.stringify(data);
+        this.status=200; this.responseText=body; this.response=body; this.readyState=4;
+        if (this.onreadystatechange) this.onreadystatechange();
+        if (this.onload) this.onload();
+      }).catch(err => {
+        const body=JSON.stringify({error:err.message});
+        this.status=500; this.responseText=body; this.response=body; this.readyState=4;
+        if (this.onreadystatechange) this.onreadystatechange();
+        if (this.onerror) this.onerror(err);
+      });
+    }
+    abort() { this.readyState=0; }
+  }
+
+  window.XMLHttpRequest=function() { return new BridgeXHR(); };
+  window.XMLHttpRequest.prototype=BridgeXHR.prototype;
+
+  window.fetch=function(input,init) {
+    const u=typeof input==="string" ? input : (input && input.url) || "";
+    if (interceptedURL(u)) {
+      return route(u).then(data => new Response(JSON.stringify(data), {
+        status:200, headers:{"Content-Type":"application/json"}
+      }));
     }
     return nativeFetch(input,init);
   };
