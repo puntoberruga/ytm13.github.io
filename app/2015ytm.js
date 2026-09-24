@@ -368,7 +368,7 @@ metaColorElm.content = "#000000";
 }
 }
 
-APIbaseURL = APP_CUSTOM_INVIDIOUS_URL_expflag;
+APIbaseURL = location.origin + "/"; // YouTube Data API bridge handles /api/v1/* locally
 APIbaseURLWatch = "https://inv.nadeko.net/";
 APIbaseURLNew = "https://yt-api.p.rapidapi.com/";
 APIbaseURLPiped = "https://pipedapi.leptons.xyz/";
