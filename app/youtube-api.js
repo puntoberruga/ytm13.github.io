@@ -157,6 +157,20 @@
       };
     }
 
+    if (/\/channel\//.test(p) && q.get("id")) {
+      const chId=q.get("id");
+      const ch=await api("channels",{part:"contentDetails",id:chId});
+      const uploads=ch.items[0]?.contentDetails?.relatedPlaylists?.uploads;
+      if (!uploads) return response([]);
+      const data=await api("playlistItems",{part:"snippet,contentDetails",playlistId:uploads,maxResults:25,pageToken:q.get("token")||""});
+      return response(data.items.map(x=>videoFrom({id:x.contentDetails.videoId,snippet:x.snippet})),data.nextPageToken);
+    }
+
+    if (/\/noKey\/channels$/.test(p) && q.get("id")) {
+      return await route(location.origin + "/api/v1/channels/" + q.get("id"));
+    }
+    if (/\/noKey\/channelSections$/.test(p)) return {items:[]};
+
     m=p.match(/\/api\/v1\/playlists\/([^/]+)$/);
     if (m) {
       const pl=await api("playlists",{part:"snippet,contentDetails",id:m[1]});
@@ -189,7 +203,8 @@
       this._ytm13URL=requestUrl;
       this.readyState=1;
     };
-    xhr.setRequestHeader=function(name,value){ if(!intercepted) return NativeXHR.prototype.setRequestHeader.call(xhr,name,value); };\n    xhr.send=function(body){
+    xhr.setRequestHeader=function(name,value){ if(!intercepted) return NativeXHR.prototype.setRequestHeader.call(xhr,name,value); };
+    xhr.send=function(body){
       if(!intercepted) return originalSend(body);
       route(requestUrl).then(data=>{
         const text=JSON.stringify(data);
