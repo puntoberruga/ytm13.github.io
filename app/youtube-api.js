@@ -191,6 +191,24 @@
     return null;
   }
 
+  // Early credential/API diagnostic. This uses one cheap videos.list request.
+  window.YTM13_YOUTUBE_API_READY = false;
+  api("videos",{part:"snippet",id:"dQw4w9WgXcQ"}).then(function(){
+    window.YTM13_YOUTUBE_API_READY = true;
+  }).catch(function(err){
+    window.YTM13_YOUTUBE_API_ERROR = err.message;
+    console.error("[YTM13] YouTube Data API:", err.message);
+    function showApiError(){
+      if (!document.body || document.getElementById("ytm13-api-error")) return;
+      const box=document.createElement("div");
+      box.id="ytm13-api-error";
+      box.style.cssText="position:fixed;z-index:2147483647;left:12px;right:12px;bottom:12px;padding:14px 16px;background:#222;color:#fff;border:1px solid #7181E3;border-radius:8px;font:14px Arial,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.35)";
+      box.textContent="YTM13 YouTube API: "+err.message;
+      document.body.appendChild(box);
+    }
+    if (document.readyState==="loading") document.addEventListener("DOMContentLoaded",showApiError,{once:true}); else showApiError();
+  });
+
   window.YTM13YouTubeAPI = { api, route, videoFrom, searchResult };
 
   const nativeFetch=window.fetch.bind(window);
