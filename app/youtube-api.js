@@ -231,17 +231,20 @@
     setRequestHeader() {}
     getResponseHeader(name) { return String(name).toLowerCase()==="content-type" ? "application/json" : null; }
     send() {
-      route(this._url).then(data => {
-        const body=JSON.stringify(data);
-        this.status=200; this.responseText=body; this.response=body; this.readyState=4;
-        if (this.onreadystatechange) this.onreadystatechange();
-        if (this.onload) this.onload();
-      }).catch(err => {
-        const body=JSON.stringify({error:err.message});
-        this.status=500; this.responseText=body; this.response=body; this.readyState=4;
-        if (this.onreadystatechange) this.onreadystatechange();
-        if (this.onerror) this.onerror(err);
-      });
+      // Match native XHR timing: handlers may be assigned immediately after send().
+      setTimeout(() => {
+        route(this._url).then(data => {
+          const body=JSON.stringify(data);
+          this.status=200; this.responseText=body; this.response=body; this.readyState=4;
+          if (this.onreadystatechange) this.onreadystatechange({target:this});
+          if (this.onload) this.onload({target:this});
+        }).catch(err => {
+          const body=JSON.stringify({error:err.message});
+          this.status=500; this.responseText=body; this.response=body; this.readyState=4;
+          if (this.onreadystatechange) this.onreadystatechange({target:this});
+          if (this.onerror) this.onerror(err);
+        });
+      }, 0);
     }
     abort() { this.readyState=0; }
   }
