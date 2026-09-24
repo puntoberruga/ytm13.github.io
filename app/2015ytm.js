@@ -152,7 +152,7 @@ APP_HELVETICA_NEUE_FONT_expflag = localStorage.getItem("APP_HELVETICA_NEUE_FONT"
 APP_NEW_ERROR_SCREEN_expflag = localStorage.getItem("APP_NEW_ERROR_SCREEN");
 APP_CUSTOM_INVIDIOUS_URL_expflag = localStorage.getItem("APP_CUSTOM_INVIDIOUS_URL");
 if (APP_CUSTOM_INVIDIOUS_URL_expflag == undefined) {
-  localStorage.setItem("APP_CUSTOM_INVIDIOUS_URL", "/* https://api.allorigins.win/raw?url= */https://yt.omada.cafe/");
+  localStorage.setItem("APP_CUSTOM_INVIDIOUS_URL", "https://inv.nadeko.net/");
   APP_CUSTOM_INVIDIOUS_URL_expflag = localStorage.getItem("APP_CUSTOM_INVIDIOUS_URL");
 }
 APP_DONT_AUTH_TO_INVIDIOUS_expflag = localStorage.getItem("APP_DONT_AUTH_TO_INVIDIOUS");
@@ -368,7 +368,7 @@ metaColorElm.content = "#000000";
 }
 }
 
-APIbaseURL = APP_CUSTOM_INVIDIOUS_URL_expflag//"https://invidious.nerdvpn.de/";
+APIbaseURL = APP_CUSTOM_INVIDIOUS_URL_expflag;
 APIbaseURLWatch = "https://inv.nadeko.net/";
 APIbaseURLNew = "https://yt-api.p.rapidapi.com/";
 APIbaseURLPiped = "https://pipedapi.leptons.xyz/";
