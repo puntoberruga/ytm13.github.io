@@ -132,7 +132,7 @@
       return response(data.items.map(x=>videoFrom({id:x.contentDetails.videoId,snippet:x.snippet})),data.nextPageToken);
     }
 
-    m=p.match(/\/api\/v1\/channels\/([^/]+)$/);
+    if ((p.endsWith("/channel/home") || p.endsWith("/channel/about")) && q.get("id")) { return await route(location.origin + "/api/v1/channels/" + q.get("id")); }\n\n    m=p.match(/\/api\/v1\/channels\/([^/]+)$/);
     if (m) {
       const ch=await api("channels",{part:"snippet,contentDetails,statistics",id:m[1]});
       const x=ch.items[0]; if(!x) return {error:"Channel not found"};
