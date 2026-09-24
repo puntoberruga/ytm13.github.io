@@ -189,7 +189,7 @@
       this._ytm13URL=requestUrl;
       this.readyState=1;
     };
-    xhr.send=function(body){
+    xhr.setRequestHeader=function(name,value){ if(!intercepted) return NativeXHR.prototype.setRequestHeader.call(xhr,name,value); };\n    xhr.send=function(body){
       if(!intercepted) return originalSend(body);
       route(requestUrl).then(data=>{
         const text=JSON.stringify(data);
