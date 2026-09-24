@@ -215,7 +215,7 @@
 
   function interceptedURL(url) {
     const s=String(url);
-    return /\/api\/v1\//.test(s) || /yt-api\.p\.rapidapi\.com/.test(s) || /invidious\./.test(s);
+    return /\/api\/v1\//.test(s) || /yt-api\.p\.rapidapi\.com/.test(s) || /invidious\./.test(s) || /inv\.nadeko\.net/.test(s);
   }
 
   class BridgeXHR {
